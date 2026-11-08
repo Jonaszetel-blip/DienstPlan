@@ -47,7 +47,7 @@ textarea{width:100%;min-height:120px;border:1px solid var(--line);border-radius:
  <div class="rowhead"><h2>3. Erkannte Dienste prüfen</h2><span class="counter" id="count">0 Termine</span></div>
  <div class="card">
   <div id="events" class="empty">Noch keine Termine vorhanden.</div>
-  <div class="actions"><button class="btn secondary" id="add">＋ Termin ergänzen</button><button class="btn primary" id="export" disabled>Bestätigte Termine als .ics exportieren</button></div><div id="fb"></div>
+  <div class="actions"><button class="btn secondary" id="add">＋ Termin ergänzen</button><button class="btn primary" id="export" disabled>Bestätigte Termine als .ics exportieren</button><button class="btn secondary" id="mail" disabled>✉ Per Mail senden</button></div><div id="fb"></div>
  </div>
 </section>
 <aside>
@@ -104,7 +104,7 @@ function parseText(text){
  return out;
 }
 function render(){
- const sel=events.filter(e=>e.on).length;$('count').textContent=`${sel} von ${events.length} ausgewählt`;$('export').disabled=!sel;
+ const sel=events.filter(e=>e.on).length;$('count').textContent=`${sel} von ${events.length} ausgewählt`;$('export').disabled=!sel;$('mail').disabled=!sel;
  const box=$('events');box.innerHTML='';
  if(!events.length){box.className='empty';box.textContent='Noch keine Termine vorhanden.';return}
  box.className='list';
@@ -227,7 +227,7 @@ function showFallback(ics,dl){
   a.textContent=e.date.split('-').reverse().join('.')+' · '+(e.title||'Dienst')+' → Google Kalender';box.append(a);
  });
 }
-$('export').addEventListener('click',async()=>{
+function buildIcs(){
  const esc=s=>String(s||'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n');
  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//DienstPlan lokal//DE','CALSCALE:GREGORIAN'];
  events.forEach((e,i)=>{
@@ -240,7 +240,18 @@ $('export').addEventListener('click',async()=>{
   const end=endDate.replaceAll('-','')+'T'+e.end.replace(':','')+'00';
   lines.push('BEGIN:VEVENT',`UID:dienstplan-${Date.now()}-${i}@local`,`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'')}`,`DTSTART:${start}`,`DTEND:${end}`,`SUMMARY:${esc(e.title)}`,'END:VEVENT');
  });
- lines.push('END:VCALENDAR');const ics=lines.join('\r\n');
+ lines.push('END:VCALENDAR');return lines.join('\r\n')}
+$('mail').addEventListener('click',async()=>{
+ if(!events.some(e=>e.on)){say('Bitte mindestens einen Termin auswählen.');return}
+ const ics=buildIcs(),f=new File([ics],'DienstPlan-Termine.ics',{type:'text/calendar'});
+ if(navigator.canShare&&navigator.canShare({files:[f]})){
+  try{await navigator.share({files:[f],title:'Dienstplan-Termine',text:'Dienstplan-Termine zum Import in den Kalender'});say('Wähle im Teilen-Dialog „Mail“. Die Datei wird automatisch angehängt.');return}catch(err){if(err&&err.name==='AbortError')return}
+ }
+ const url=URL.createObjectURL(new Blob([ics],{type:'text/calendar;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='DienstPlan-Termine.ics';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+ location.href='mailto:?subject='+encodeURIComponent('Dienstplan-Termine')+'&body='+encodeURIComponent('Bitte die Datei DienstPlan-Termine.ics anhängen (wurde soeben heruntergeladen).');
+ say('Datei geladen. Hänge DienstPlan-Termine.ics in der Mail an.');
+});
+$('export').addEventListener('click',async()=>{const ics=buildIcs();
   const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
   try{const dl=(window.claude&&claude.use)?await claude.use('downloads'):null;
   if(dl){try{await dl.save({filename:'DienstPlan-Termine.ics',data:ics});say('Die Datei „DienstPlan-Termine.ics“ wurde bereitgestellt.');return}catch(err){if(err&&err.code==='declined')return;showFallback(ics,dl);say('Der Datei-Download ist in dieser Ansicht nicht möglich.');return}}}catch(_){}
