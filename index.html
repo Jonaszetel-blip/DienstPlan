@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10251f">
+<title>DienstPlan – lokal</title>
+<style>
+:root{--bg:#f3f6f4;--card:#fff;--ink:#17251f;--muted:#718078;--line:#e2e9e4;--green:#176b4a;--pale:#e7f3ec;--dark:#10251f;--warn:#fff4dc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:1000px;margin:auto;padding:22px 16px 48px}header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:28px}.brand{display:flex;gap:11px;align-items:center}.logo{width:42px;height:42px;background:var(--dark);color:#fff;border-radius:13px;display:grid;place-items:center;font-size:21px}.brand b{display:block;font-size:18px}.brand small{color:var(--muted)}.badge{font-size:11px;font-weight:700;color:var(--green);background:var(--pale);border-radius:99px;padding:7px 10px}
+h1{font-size:clamp(27px,5vw,38px);letter-spacing:-1px;line-height:1.12;margin:8px 0}.eyebrow{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:800;color:var(--green)}.intro{color:var(--muted);max-width:680px;margin:0 0 22px}
+.layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(260px,.7fr);gap:16px;align-items:start}.card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:19px;margin-bottom:15px}.card h2{font-size:17px;margin:0 0 4px}.muted{font-size:12px;color:var(--muted);margin:0 0 15px}
+.drop{background:#f8fbf9;border:2px dashed #b9c9be;border-radius:14px;text-align:center;padding:25px 15px}.drop strong{display:block}.drop p{font-size:12px;color:var(--muted);margin:5px 0 14px}.drop.drag{background:var(--pale);border-color:var(--green)}
+button{font:inherit;cursor:pointer}.btn{border:0;border-radius:10px;padding:11px 15px;font-size:13px;font-weight:750}.primary{background:var(--green);color:white}.secondary{background:#edf2ee;color:#34463b}.btn:disabled{opacity:.4;cursor:not-allowed}
+input,textarea{font:inherit}input[type=file]{display:none}.fileline{display:none;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;background:#f1f6f2;border-radius:10px;margin-top:10px;font-size:12px}.fileline.show{display:flex}.fileline span{overflow-wrap:anywhere}
+textarea{width:100%;min-height:120px;border:1px solid var(--line);border-radius:11px;padding:11px;resize:vertical;font-size:14px}.hint{background:var(--warn);color:#76551d;padding:11px 12px;border-radius:10px;font-size:12px;margin-top:13px}
+.rowhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:18px 0 10px}.rowhead h2{font-size:17px;margin:0}.counter{font-size:11px;background:#edf2ee;color:#536359;padding:5px 9px;border-radius:99px}
+.list{display:grid;gap:9px}.empty{border:1px solid var(--line);border-radius:12px;padding:22px 12px;text-align:center;color:var(--muted);font-size:13px}
+.item{display:grid;grid-template-columns:70px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px}.date{background:#f0f6f1;color:var(--green);text-align:center;border-radius:9px;padding:7px 3px}.date b{display:block;font-size:17px}.date small{text-transform:uppercase;font-size:10px;font-weight:800}.fields{min-width:0}.fields input{width:100%;border:1px solid transparent;border-radius:6px;padding:3px 5px;font-weight:700;background:transparent}.fields input:focus{outline:2px solid #b7d8c4;background:#fff}.times{display:flex;gap:6px;margin-top:4px}.times input{width:105px;border:1px solid var(--line);font-size:12px;font-weight:500}.delete{width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:8px;color:#64746a}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.actions .primary{flex:1}
+.steps{display:grid;gap:13px}.step{display:flex;gap:10px;font-size:12px}.step b{color:var(--green);font-size:13px}.step strong{display:block;font-size:13px}
+.privacy{font-size:11px;color:var(--muted);line-height:1.5;margin-top:12px}.status{font-size:12px;color:var(--green);font-weight:700;margin-top:10px;min-height:18px}
+@media(max-width:740px){.layout{grid-template-columns:1fr}main{padding:17px 13px 36px}.card{padding:16px}.badge{font-size:10px}.item{grid-template-columns:60px minmax(0,1fr) auto;gap:7px}}
+</style>
+</head>
+<body>
+<main id="app">
+<header><div class="brand"><div class="logo">▦</div><div><b>DienstPlan</b><small>Lokaler Dienstplan-Assistent</small></div></div><span class="badge">● Nur lokal</span></header>
+<div class="eyebrow">Privater Arbeitsbereich</div>
+<h1>Schichten erkennen.<br>Termine kontrolliert übernehmen.</h1>
+<p class="intro">Diese Version arbeitet ohne Hosting und ohne Cloud-Speicherung. Du kannst Text aus deinem persönlichen Dienstplan einfügen, mögliche Termine erkennen lassen, korrigieren und als Kalenderdatei exportieren.</p>
+<div class="layout">
+<section>
+ <div class="card">
+  <h2>1. Dienstplan auswählen</h2><p class="muted">Die Datei bleibt auf diesem Gerät. Excel-Dateien (.xlsx), Word-Dateien (.docx) und TXT/CSV werden lokal gelesen. Bei PDFs wird vorhandener Text lokal versucht auszulesen. Gescannte PDFs und Fotos benötigen OCR; dafür gibt es hier noch keinen eingebetteten Offline-Erkenner.</p>
+  <div class="drop" id="drop"><strong>Datei hier ablegen oder auswählen</strong><p>Excel (.xlsx), Word (.docx), PDF mit Text, TXT oder CSV – Verarbeitung auf diesem Gerät</p><button class="btn primary" id="pick">Datei auswählen</button><input id="file" type="file" accept=".xlsx,.docx,.pdf,.txt,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/plain,text/csv,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf"></div>
+  <div class="fileline" id="fileline"><span id="filename"></span><button class="btn secondary" id="clear" type="button">Entfernen</button></div>
+  <div class="hint"><b>Wichtig:</b> DOCX wird direkt verarbeitet. Textbasierte PDFs können je nach Aufbau ausgelesen werden. Bei eingescannten PDFs und Fotos bitte Apples Live Text verwenden und den erkannten Text in das Textfeld kopieren; eine vollständig lokale OCR ist noch nicht integriert.</div>
+ </div>
+ <div class="card">
+  <h2>2. Dienstplantext auswerten</h2><p class="muted">Füge den aus Word kopierten Dienstplantext ein. Datumszeilen mit F/DF, S/DS und N/DN werden als Schichten erkannt. U/u wird als Urlaub übernommen; Frei-Kennzeichen und leere Felder werden ausgelassen.</p>
+  <textarea id="text" placeholder="Beispiel:&#10;Freitag, 01. Jan. 2027 N&#10;Montag, 04. Jan. 2027&#10;Mittwoch, 06. Jan. 2027 U&#10;Freitag, 22. Jan. 2027 F"></textarea>
+  <div class="actions"><button class="btn primary" id="analyze">Text auswerten</button><button class="btn secondary" id="cleartext">Text löschen</button></div>
+  <div class="status" id="status" aria-live="polite"></div>
+ </div>
+ <div class="rowhead"><h2>3. Erkannte Dienste prüfen</h2><span class="counter" id="count">0 Termine</span></div>
+ <div class="card">
+  <div id="events" class="empty">Noch keine Termine vorhanden.</div>
+  <div class="actions"><button class="btn secondary" id="add">＋ Termin ergänzen</button><button class="btn primary" id="export" disabled>Bestätigte Termine als .ics exportieren</button></div><div id="fb"></div>
+ </div>
+</section>
+<aside>
+ <div class="card"><h2>Kalender nutzen</h2><p class="muted">Der Export erstellt eine Kalenderdatei, die du auf iPhone oder iPad öffnen und in deinen Kalender importieren kannst.</p>
+ <div class="steps">
+  <div class="step"><b>01</b><div><strong>Prüfen</strong>Kontrolliere jeden erkannten Dienst.</div></div>
+  <div class="step"><b>02</b><div><strong>Exportieren</strong>Erstelle eine .ics-Datei.</div></div>
+  <div class="step"><b>03</b><div><strong>Importieren</strong>Öffne die Datei und füge die Termine deinem Kalender hinzu.</div></div>
+ </div>
+ <p class="privacy">Google, Outlook und Apple werden in dieser lokalen Version nicht direkt per Konto verbunden. Der .ics-Export ist der geräteunabhängige Weg ohne fremde Kalender-Serveranbindung.</p>
+ </div>
+ <div class="card"><h2>Datenschutz</h2><p class="muted">Diese Datei enthält keinen Servercode, keine Anmeldung und keine Cloud-Speicherung. Die Auswertung erfolgt im geöffneten Browser. U/u wird als Urlaubstermin übernommen. *, ÜUZ, NEIN und leere Felder gelten als frei und erzeugen keinen Kalendereintrag. Bitte beachte: Wenn du eine exportierte Kalenderdatei in einen synchronisierten Kalender importierst, gelten dessen Synchronisierungseinstellungen.</p></div>
+</aside>
+</div>
+</main>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);let events=[];
+const monthNames=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+function say(t){$('status').textContent=t}
+function parseText(text){
+ const out=[],seen=new Set();
+ const monthMap={jan:0,feb:1,mar:2,mär:2,mrz:2,apr:3,mai:4,jun:5,jul:6,aug:7,sep:8,okt:9,nov:10,dez:11};
+ const shiftMap={
+  F:{title:'Frühschicht',start:'06:00',end:'14:00'},
+  DF:{title:'Frühschicht',start:'06:00',end:'14:00'},
+  S:{title:'Spätschicht',start:'14:00',end:'22:00'},
+  DS:{title:'Spätschicht',start:'14:00',end:'22:00'},
+  N:{title:'Nachtschicht',start:'22:00',end:'06:00'},
+  DN:{title:'Nachtschicht',start:'22:00',end:'06:00'}
+ };
+ const lines=text.split(/\r?\n/);
+ for(let li=0;li<lines.length;li++){
+  const line=lines[li].replace(/\s+/g,' ').trim();if(!line)continue;
+  // Format im Beispieldienstplan: Wochentag, 01. Jan. 2027 N
+  const m=line.match(/(?:Montag|Dienstag|Mittwoch|Donnerstag|Freitag|Samstag|Sonntag),?\s*(\d{1,2})\.\s*([A-Za-zÄÖÜäöü]{3,})\.?\s*(20\d{2})\s*([A-Za-z*]+)?/i)
+    || line.match(/\b(\d{1,2})\.\s*([A-Za-zÄÖÜäöü]{3,})\.?\s*(20\d{2})\s*([A-Za-z*]+)?/i);
+  if(!m)continue;
+  const day=+m[1],monToken=m[2].slice(0,3).toLowerCase(),month=monthMap[monToken],year=+m[3];
+  if(month===undefined)continue;
+  const dt=new Date(year,month,day);if(dt.getFullYear()!==year||dt.getMonth()!==month||dt.getDate()!==day)continue;
+  let code=(m[4]||'').toUpperCase();
+  if(!code){const nx=(lines[li+1]||'').replace(/\s+/g,' ').trim();if(/^(DF|DS|DN|F|S|N|U)$/i.test(nx))code=nx.toUpperCase();}
+  const key=`${year}-${month}-${day}`;if(seen.has(key))continue;seen.add(key);
+  if(shiftMap[code]){
+   const s=shiftMap[code];out.push({date:`${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,start:s.start,end:s.end,title:s.title,code});
+  }else if(code==='U'){
+   out.push({date:`${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,start:'00:00',end:'23:59',title:'Urlaub',code:'U',allDay:true});
+  }
+  // *, ÜUZ, NEIN und leere Felder bedeuten frei und werden absichtlich nicht importiert.
+ }
+ out.forEach(e=>e.on=true);
+ out.sort((a,b)=>a.date.localeCompare(b.date));
+ return out;
+}
+function render(){
+ const sel=events.filter(e=>e.on).length;$('count').textContent=`${sel} von ${events.length} ausgewählt`;$('export').disabled=!sel;
+ const box=$('events');box.innerHTML='';
+ if(!events.length){box.className='empty';box.textContent='Noch keine Termine vorhanden.';return}
+ box.className='list';
+ events.forEach((e,i)=>{
+  const dt=new Date(e.date+'T12:00:00'),row=document.createElement('div');row.className='item';
+  const date=document.createElement('div');date.className='date';date.innerHTML=`<b>${dt.getDate()}.</b><small>${monthNames[dt.getMonth()]}</small>`;
+  const fields=document.createElement('div');fields.className='fields';
+  const title=document.createElement('input');title.value=e.title;title.setAttribute('aria-label','Dienstbezeichnung');title.addEventListener('input',()=>e.title=title.value);
+  const times=document.createElement('div');times.className='times';
+  const dateInput=document.createElement('input');dateInput.type='date';dateInput.value=e.date;dateInput.setAttribute('aria-label','Datum');dateInput.addEventListener('change',()=>{e.date=dateInput.value;render()});
+  const start=document.createElement('input');start.type='time';start.value=e.start;start.setAttribute('aria-label','Beginn');start.addEventListener('change',()=>e.start=start.value);
+  const end=document.createElement('input');end.type='time';end.value=e.end;end.setAttribute('aria-label','Ende');end.addEventListener('change',()=>e.end=end.value);
+  times.append(dateInput);if(!e.allDay)times.append(start,end);else{const ad=document.createElement('span');ad.textContent='ganztägig';ad.style.cssText='font-size:12px;color:var(--muted);align-self:center';times.append(ad)}
+  fields.append(title,times);
+  const chk=document.createElement('input');chk.type='checkbox';chk.checked=!!e.on;chk.setAttribute('aria-label','Termin übernehmen');chk.style.cssText='width:20px;height:20px;accent-color:var(--green)';chk.addEventListener('change',()=>{e.on=chk.checked;render()});
+  const side=document.createElement('div');side.style.cssText='display:flex;gap:8px;align-items:center';
+  const del=document.createElement('button');del.className='delete';del.textContent='×';del.setAttribute('aria-label','Termin löschen');del.addEventListener('click',()=>{events.splice(i,1);render()});
+  side.append(chk,del);row.append(date,fields,side);if(!e.on)row.style.opacity='.55';box.append(row);
+ });
+}
+$('pick').addEventListener('click',()=>$('file').click());
+async function unzipEntry(buffer,wanted){
+ const bytes=new Uint8Array(buffer),view=new DataView(buffer);let eocd=-1;
+ for(let i=bytes.length-22;i>=Math.max(0,bytes.length-65558);i--){if(view.getUint32(i,true)===0x06054b50){eocd=i;break}}
+ if(eocd<0)throw new Error('Word-Datei ist kein gültiges DOCX-Archiv.');
+ const count=view.getUint16(eocd+10,true),central=view.getUint32(eocd+16,true);let pos=central;
+ for(let n=0;n<count;n++){
+  if(view.getUint32(pos,true)!==0x02014b50)break;
+  const method=view.getUint16(pos+10,true),size=view.getUint32(pos+20,true),nameLen=view.getUint16(pos+28,true),extraLen=view.getUint16(pos+30,true),commentLen=view.getUint16(pos+32,true),local=view.getUint32(pos+42,true);
+  const name=new TextDecoder().decode(bytes.slice(pos+46,pos+46+nameLen));
+  if(name===wanted){
+   const lp=local+30+view.getUint16(local+26,true)+view.getUint16(local+28,true);
+   const compressed=bytes.slice(lp,lp+size);
+   if(method===0)return compressed;
+   if(method===8){if(!('DecompressionStream'in window))throw new Error('Dieser Browser unterstützt die lokale DOCX-Entpackung nicht.');const ds=new DecompressionStream('deflate-raw');const stream=new Blob([compressed]).stream().pipeThrough(ds);return new Uint8Array(await new Response(stream).arrayBuffer())}
+   throw new Error('Unbekanntes DOCX-Kompressionsverfahren.');
+  }
+  pos+=46+nameLen+extraLen+commentLen;
+ }
+ throw new Error('In der Word-Datei wurde kein Dokumenttext gefunden.');
+}
+async function readXlsx(file){
+ const buffer=await file.arrayBuffer(),decoder=new TextDecoder('utf-8');
+ const get=async name=>{try{return await unzipEntry(buffer,name)}catch{return null}};
+ const wbBytes=await get('xl/workbook.xml');if(!wbBytes)throw new Error('Keine gültige Excel-Arbeitsmappe (.xlsx) gefunden.');
+ const wb=new DOMParser().parseFromString(decoder.decode(wbBytes),'application/xml');
+ const first=wb.getElementsByTagNameNS('*','sheet')[0];if(!first)throw new Error('Die Excel-Datei enthält kein Tabellenblatt.');
+ let path='xl/worksheets/sheet1.xml';const relBytes=await get('xl/_rels/workbook.xml.rels');
+ if(relBytes){const rels=new DOMParser().parseFromString(decoder.decode(relBytes),'application/xml'),rid=first.getAttribute('r:id');const rel=[...rels.getElementsByTagNameNS('*','Relationship')].find(x=>x.getAttribute('Id')===rid);if(rel){const target=rel.getAttribute('Target').replace(/^\//,'');path=target.startsWith('xl/')?target:'xl/'+target.replace(/^\.\//,'');}}
+ const sheetBytes=await get(path);if(!sheetBytes)throw new Error('Das erste Tabellenblatt konnte nicht gelesen werden.');
+ let shared=[];const ss=await get('xl/sharedStrings.xml');if(ss){const x=new DOMParser().parseFromString(decoder.decode(ss),'application/xml');shared=[...x.getElementsByTagNameNS('*','si')].map(si=>[...si.getElementsByTagNameNS('*','t')].map(t=>t.textContent).join(''));}
+ const doc=new DOMParser().parseFromString(decoder.decode(sheetBytes),'application/xml'),rows=[...doc.getElementsByTagNameNS('*','row')];
+ const col=ref=>{const m=String(ref||'').match(/[A-Z]+/i);if(!m)return 0;let n=0;for(const c of m[0].toUpperCase())n=n*26+c.charCodeAt(0)-64;return n-1;};
+ const codes=new Set(['F','DF','S','DS','N','DN','U']),out=[];
+ for(const row of rows){const vals=[];for(const c of [...row.getElementsByTagNameNS('*','c')]){const i=col(c.getAttribute('r')),type=c.getAttribute('t');let v='';if(type==='s')v=shared[Number(c.getElementsByTagNameNS('*','v')[0]?.textContent)]||'';else if(type==='inlineStr')v=[...c.getElementsByTagNameNS('*','t')].map(t=>t.textContent).join('');else v=c.getElementsByTagNameNS('*','v')[0]?.textContent||'';vals[i]=String(v).trim();}
+  let date=null;for(const raw of vals){const v=raw||'';let m=v.match(/^(\d{1,2})[.\-/](\d{1,2})[.\-/](20\d{2})$/);if(m){date=`${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;break;}m=v.match(/^(20\d{2})-(\d{1,2})-(\d{1,2})$/);if(m){date=`${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;break;}m=v.match(/(\d{1,2})\.\s*([A-Za-zÄÖÜäöü]{3,})\.?\s*(20\d{2})/);if(m){const mi=({jan:1,feb:2,mar:3,mär:3,mrz:3,apr:4,mai:5,jun:6,jul:7,aug:8,sep:9,okt:10,nov:11,dez:12})[m[2].slice(0,3).toLowerCase()];if(mi){date=`${m[3]}-${String(mi).padStart(2,'0')}-${m[1].padStart(2,'0')}`;break;}}if(/^\d+(?:\.\d+)?$/.test(v)&&Number(v)>=30000&&Number(v)<=80000){date=new Date(Date.UTC(1899,11,30)+Math.floor(Number(v))*86400000).toISOString().slice(0,10);break;}}
+  if(!date)continue;const code=vals.map(v=>(v||'').toUpperCase().replace(/[\s.]/g,'')).find(v=>codes.has(v));if(code){const [y,mo,d]=date.split('-').map(Number),months=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];out.push(`${d}. ${months[mo-1]} ${y} ${code}`);}}
+ if(!out.length)throw new Error('Keine Zeilen mit Datum und Schichtcode gefunden. Datum und Schichtcode (F/DF, S/DS, N/DN oder U) müssen in derselben Zeile stehen.');return out.join('\n');
+}
+
+async function readDocx(file){
+ const data=await file.arrayBuffer(),xmlBytes=await unzipEntry(data,'word/document.xml');
+ const xml=new DOMParser().parseFromString(new TextDecoder().decode(xmlBytes),'application/xml');
+ if(xml.querySelector('parsererror'))throw new Error('Word-Dokument konnte nicht gelesen werden.');
+ const paras=[...xml.getElementsByTagNameNS('*','p')];
+ return paras.map(p=>[...p.getElementsByTagNameNS('*','t')].map(t=>t.textContent).join('')).filter(Boolean).join('\n');
+}
+async function readPdfText(file){
+ const bytes=new Uint8Array(await file.arrayBuffer());let raw=new TextDecoder('latin1').decode(bytes),chunks=[];
+ // PDF content streams: inflate FlateDecode streams locally where browser support exists.
+ const streamRe=/<<(.*?)>>\s*stream\r?\n([\s\S]*?)\r?\nendstream/g;let m;
+ while((m=streamRe.exec(raw))){
+  let data=Uint8Array.from(m[2],c=>c.charCodeAt(0)&255);
+  if(/FlateDecode/.test(m[1])&&'DecompressionStream'in window){
+   try{data=new Uint8Array(await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer())}catch{continue}
+  }else if(/FlateDecode/.test(m[1]))continue;
+  const s=new TextDecoder('latin1').decode(data);
+  const re=/\(((?:\\.|[^\\)])*)\)\s*Tj|\[((?:.|\n)*?)\]\s*TJ/g;let q;
+  while((q=re.exec(s))){
+   const part=q[1]!==undefined?q[1]:[...q[2].matchAll(/\(((?:\\.|[^\\)])*)\)/g)].map(x=>x[1]).join(' ');
+   chunks.push(part.replace(/\\([()\\])/g,'$1').replace(/\\n/g,' ').replace(/\\r/g,' '));
+  }
+ }
+ if(!chunks.length)throw new Error('Kein auslesbarer PDF-Text gefunden. Bei einem Scan bitte Live Text verwenden und den Text einfügen.');
+ return chunks.join(' ').replace(/\s+/g,' ');
+}
+async function loadLocalFile(file){
+ try{
+  const ext=file.name.split('.').pop().toLowerCase();let t='';
+  if(ext==='docx')t=await readDocx(file);
+  else if(ext==='xlsx')t=await readXlsx(file);
+  else if(ext==='pdf')t=await readPdfText(file);
+  else if(['txt','csv'].includes(ext))t=await file.text();
+  else throw new Error('Dieses Format ist noch nicht direkt lesbar. Unterstützt werden XLSX, DOCX, PDF, TXT und CSV (ältere .xls bitte als .xlsx speichern). Bei Fotos bitte Live Text verwenden.');
+  $('text').value=t;$('filename').textContent=file.name;$('fileline').classList.add('show');
+  say(`Datei lokal eingelesen (${t.length} Zeichen). Klicke auf „Text auswerten“.`);
+ }catch(err){say(err.message||'Datei konnte nicht gelesen werden.');}
+}
+$('file').addEventListener('change',e=>{const f=e.target.files[0];if(f)loadLocalFile(f)});
+$('clear').addEventListener('click',()=>{$('file').value='';$('fileline').classList.remove('show');$('text').value='';say('Datei entfernt.')});
+$('drop').addEventListener('dragover',e=>{e.preventDefault();$('drop').classList.add('drag')});
+$('drop').addEventListener('dragleave',()=>$('drop').classList.remove('drag'));
+$('drop').addEventListener('drop',e=>{e.preventDefault();$('drop').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)loadLocalFile(f)});
+$('analyze').addEventListener('click',()=>{const parsed=parseText($('text').value);events=parsed;render();say(parsed.length?`${parsed.length} mögliche Termine gefunden. Bitte Datum und Schichtzeiten kontrollieren.`:'Keine Datumsangaben erkannt. Prüfe den eingefügten Text.');});
+$('cleartext').addEventListener('click',()=>{$('text').value='';say('Textfeld geleert.')});
+$('add').addEventListener('click',()=>{const d=new Date();d.setDate(d.getDate()+1);events.push({date:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,start:'08:00',end:'16:00',title:'Neuer Dienst',on:true});render()});
+function showFallback(ics,dl){
+ const box=$('fb');box.innerHTML='';const sel=events.filter(e=>e.on&&e.date);
+ const p=document.createElement('div');p.className='hint';p.textContent='Der .ics-Download ist in dieser Ansicht gesperrt. Öffne die Seite im Browser (Safari/Chrome), dort funktioniert der Export. Oder trage die Termine einzeln über diese Links ein:';box.append(p);
+ if(dl){const all=document.createElement('button');all.className='btn primary';all.style.cssText='display:block;width:100%;margin-top:8px';all.textContent='Alle Termine als Datei sichern (.txt)';
+  all.addEventListener('click',async()=>{try{await dl.save({filename:'DienstPlan-Termine.txt',data:ics});say('Gesichert. In „Dateien“ die Endung .txt in .ics ändern und die Datei öffnen: alle Termine werden auf einmal in den Kalender importiert.')}catch(err){if(!err||err.code!=='declined')say('Sichern nicht möglich.')}});
+  const h=document.createElement('div');h.className='privacy';h.textContent='Danach in der Dateien-App die Datei lange drücken, „Umbenennen“ wählen, aus „.txt“ „.ics“ machen und öffnen. Dann werden alle Termine auf einmal übernommen.';box.append(all,h);}
+ const d8=s=>s.replaceAll('-',''),nd=s=>{const n=new Date(s+'T12:00:00');n.setDate(n.getDate()+1);return `${n.getFullYear()}${String(n.getMonth()+1).padStart(2,'0')}${String(n.getDate()).padStart(2,'0')}`};
+ sel.forEach(e=>{
+  let dates;
+  if(e.allDay)dates=d8(e.date)+'/'+nd(e.date);
+  else{if(!e.start||!e.end)return;const[sh,sm]=e.start.split(':').map(Number),[eh,em]=e.end.split(':').map(Number);dates=d8(e.date)+'T'+e.start.replace(':','')+'00/'+(eh*60+em<=sh*60+sm?nd(e.date):d8(e.date))+'T'+e.end.replace(':','')+'00'}
+  const a=document.createElement('a');a.className='btn secondary';a.style.cssText='display:block;margin-top:8px;text-decoration:none;text-align:center';a.target='_blank';a.rel='noopener';
+  a.href='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(e.title||'Dienst')+'&dates='+dates;
+  a.textContent=e.date.split('-').reverse().join('.')+' · '+(e.title||'Dienst')+' → Google Kalender';box.append(a);
+ });
+}
+$('export').addEventListener('click',async()=>{
+ const esc=s=>String(s||'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n');
+ const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//DienstPlan lokal//DE','CALSCALE:GREGORIAN'];
+ events.forEach((e,i)=>{
+  if(!e.on||!e.date)return;
+  if(e.allDay){const n=new Date(e.date+'T12:00:00');n.setDate(n.getDate()+1);const nd=`${n.getFullYear()}${String(n.getMonth()+1).padStart(2,'0')}${String(n.getDate()).padStart(2,'0')}`;lines.push('BEGIN:VEVENT',`UID:dienstplan-${Date.now()}-${i}@local`,`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'')}`,`DTSTART;VALUE=DATE:${e.date.replaceAll('-','')}`,`DTEND;VALUE=DATE:${nd}`,`SUMMARY:${esc(e.title)}`,'TRANSP:TRANSPARENT','END:VEVENT');return}
+  if(!e.start||!e.end)return;
+  const start=e.date.replaceAll('-','')+'T'+e.start.replace(':','')+'00';
+  let endDate=e.date,[sh,sm]=e.start.split(':').map(Number),[eh,em]=e.end.split(':').map(Number);
+  if(eh*60+em<=sh*60+sm){const n=new Date(e.date+'T12:00:00');n.setDate(n.getDate()+1);endDate=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`}
+  const end=endDate.replaceAll('-','')+'T'+e.end.replace(':','')+'00';
+  lines.push('BEGIN:VEVENT',`UID:dienstplan-${Date.now()}-${i}@local`,`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'')}`,`DTSTART:${start}`,`DTEND:${end}`,`SUMMARY:${esc(e.title)}`,'END:VEVENT');
+ });
+ lines.push('END:VCALENDAR');const ics=lines.join('\r\n');
+  const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+  try{const dl=(window.claude&&claude.use)?await claude.use('downloads'):null;
+  if(dl){try{await dl.save({filename:'DienstPlan-Termine.ics',data:ics});say('Die Datei „DienstPlan-Termine.ics“ wurde bereitgestellt.');return}catch(err){if(err&&err.code==='declined')return;showFallback(ics,dl);say('Der Datei-Download ist in dieser Ansicht nicht möglich.');return}}}catch(_){}
+  const f=new File([blob],'DienstPlan-Termine.ics',{type:'text/calendar'});
+  if(navigator.canShare&&navigator.canShare({files:[f]})&&/iPhone|iPad/.test(navigator.userAgent)){try{await navigator.share({files:[f],title:'DienstPlan'});say('Kalenderdatei geteilt. Wähle „Kalender“ bzw. „In Dateien sichern“.');return}catch(err){if(err&&err.name==='AbortError')return}}
+  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='DienstPlan-Termine.ics';document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);say('Die Datei „DienstPlan-Termine.ics“ wurde erstellt. Du kannst sie jetzt in deinen Kalender importieren.');
+});
+})();
+</script>
+</body>
+</html>
